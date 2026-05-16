@@ -1,0 +1,78 @@
+@using HttpProxy
+@using HttpProxy.Proxy
+@inject ProxyOptions Options
+@inject ProxyRuntimeState State
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LlmHub HttpProxy</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: Segoe UI, system-ui, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: Canvas;
+            color: CanvasText;
+        }
+
+        main {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        h1 {
+            margin: 0 0 24px;
+            font-size: 32px;
+            font-weight: 650;
+        }
+
+        dl {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: 12px 20px;
+            margin: 0;
+        }
+
+        dt {
+            font-weight: 650;
+            color: color-mix(in srgb, CanvasText 70%, transparent);
+        }
+
+        dd {
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        code {
+            font-family: Consolas, ui-monospace, monospace;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>LlmHub HttpProxy</h1>
+        <dl>
+            <dt>Proxy</dt>
+            <dd><code>@State.ProxyEndpoint</code></dd>
+            <dt>Certificate</dt>
+            <dd><code>@State.CertificateUrl</code></dd>
+            <dt>Blazor UI</dt>
+            <dd><code>http://127.0.0.1:@Options.UiPort</code></dd>
+            <dt>MCP</dt>
+            <dd><code>http://127.0.0.1:@Options.UiPort/mcp</code></dd>
+            <dt>Started</dt>
+            <dd><code>@(State.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "not started")</code></dd>
+            <dt>Auth Header</dt>
+            <dd><code>@(String.IsNullOrWhiteSpace(Options.AuthHeaderName) ? "not configured" : Options.AuthHeaderName)</code></dd>
+        </dl>
+    </main>
+</body>
+</html>
