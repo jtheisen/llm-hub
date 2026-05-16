@@ -1,4 +1,4 @@
-namespace HttpProxy.Proxy;
+namespace Hub.Proxy;
 
 internal sealed class ProxyRuntimeState
 {

@@ -1,6 +1,6 @@
-using HttpProxy;
-using HttpProxy.Components;
-using HttpProxy.Proxy;
+using Hub;
+using Hub.Components;
+using Hub.Proxy;
 using ModelContextProtocol.AspNetCore;
 
 var options = ProxyOptions.Parse(args);

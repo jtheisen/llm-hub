@@ -1,5 +1,5 @@
-@using HttpProxy
-@using HttpProxy.Proxy
+@using Hub
+@using Hub.Proxy
 @inject ProxyOptions Options
 @inject ProxyRuntimeState State
 
@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LlmHub HttpProxy</title>
+    <title>LlmHub Hub</title>
     <style>
         :root {
             color-scheme: light dark;
@@ -58,7 +58,7 @@
 </head>
 <body>
     <main>
-        <h1>LlmHub HttpProxy</h1>
+        <h1>LlmHub Hub</h1>
         <dl>
             <dt>Proxy</dt>
             <dd><code>@State.ProxyEndpoint</code></dd>

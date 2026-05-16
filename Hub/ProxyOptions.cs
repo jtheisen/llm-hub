@@ -1,4 +1,4 @@
-namespace HttpProxy;
+namespace Hub;
 
 internal sealed record ProxyOptions(
     Int32 ProxyPort,

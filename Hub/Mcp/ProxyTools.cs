@@ -1,13 +1,11 @@
 using System.ComponentModel;
-using HttpProxy.Proxy;
-using ModelContextProtocol.Server;
 
-namespace HttpProxy.Mcp;
+namespace Hub.Mcp;
 
-[McpServerToolType]
-internal sealed class ProxyTools(ProxyOptions options, ProxyRuntimeState state)
+[ModelContextProtocol.Server.McpServerToolType]
+internal sealed class ProxyTools(ProxyOptions options, Proxy.ProxyRuntimeState state)
 {
-    [McpServerTool]
+    [ModelContextProtocol.Server.McpServerTool]
     [Description("Gets the local proxy, UI, MCP, and certificate endpoints.")]
     public String GetProxyStatus()
     {

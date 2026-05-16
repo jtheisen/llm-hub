@@ -2,7 +2,7 @@ using System.Net;
 using Fluxzy;
 using Fluxzy.Rules.Actions;
 
-namespace HttpProxy.Proxy;
+namespace Hub.Proxy;
 
 internal sealed class FluxzyProxyHostedService(
     ProxyOptions options,
