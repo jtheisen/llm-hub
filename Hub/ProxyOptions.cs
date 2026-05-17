@@ -67,3 +67,30 @@ internal sealed record ProxyOptions(
         return null;
     }
 }
+
+internal sealed class ProxySettings
+{
+    public List<HostAliasOptions> HostAliases { get; init; } = [];
+
+    public List<HeaderInjectionOptions> HeaderInjections { get; init; } = [];
+}
+
+internal sealed class HostAliasOptions
+{
+    public String Alias { get; init; } = "";
+
+    public String Target { get; init; } = "";
+}
+
+internal sealed class HeaderInjectionOptions
+{
+    public String? Host { get; init; }
+
+    public String? PathRegex { get; init; }
+
+    public String? BearerToken { get; init; }
+
+    public String? Authorization { get; init; }
+
+    public Dictionary<String, String?> Headers { get; init; } = [];
+}

@@ -3,12 +3,14 @@ using Hub.Components;
 using Hub.Proxy;
 using ModelContextProtocol.AspNetCore;
 
-var options = ProxyOptions.Parse(args);
 var builder = WebApplication.CreateBuilder(args);
+var options = ProxyOptions.Parse(args);
+var proxySettings = builder.Configuration.GetSection("Proxy").Get<ProxySettings>() ?? new ProxySettings();
 
 builder.WebHost.UseUrls($"http://127.0.0.1:{options.UiPort}");
 
 builder.Services.AddSingleton(options);
+builder.Services.AddSingleton(proxySettings);
 builder.Services.AddSingleton<ProxyRuntimeState>();
 builder.Services.AddHostedService<FluxzyProxyHostedService>();
 

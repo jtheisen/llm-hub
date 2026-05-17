@@ -1,6 +1,7 @@
 @using Hub
 @using Hub.Proxy
 @inject ProxyOptions Options
+@inject ProxySettings ProxySettings
 @inject ProxyRuntimeState State
 
 <!DOCTYPE html>
@@ -72,6 +73,10 @@
             <dd><code>@(State.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "not started")</code></dd>
             <dt>Auth Header</dt>
             <dd><code>@(String.IsNullOrWhiteSpace(Options.AuthHeaderName) ? "not configured" : Options.AuthHeaderName)</code></dd>
+            <dt>Host aliases</dt>
+            <dd><code>@ProxySettings.HostAliases.Count</code></dd>
+            <dt>Header rules</dt>
+            <dd><code>@ProxySettings.HeaderInjections.Count</code></dd>
         </dl>
     </main>
 </body>
