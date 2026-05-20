@@ -18,21 +18,28 @@ internal sealed class DatabaseTools(DatabaseSettings settings)
     public String ListConfiguredDatabaseConnections()
     {
         var connections = settings.Connections
-            .Select(connection => new
+            .Select(connection =>
             {
-                connection.Name,
-                Provider = GetProvider(connection),
-                connection.Host,
-                Port = connection.Port ?? 5432,
-                connection.Database,
-                connection.Username,
-                PasswordConfigured = !String.IsNullOrWhiteSpace(connection.Password),
-                Options = connection.Options.Keys.Order(StringComparer.OrdinalIgnoreCase).ToArray()
+                var resolvedConnection = ResolveConnection(connection);
+
+                return new
+                {
+                    connection.Name,
+                    connection.Profile,
+                    Provider = GetProvider(resolvedConnection),
+                    resolvedConnection.Host,
+                    Port = resolvedConnection.Port ?? 5432,
+                    resolvedConnection.Database,
+                    resolvedConnection.Username,
+                    PasswordConfigured = !String.IsNullOrWhiteSpace(resolvedConnection.Password),
+                    Options = resolvedConnection.Options.Keys.Order(StringComparer.OrdinalIgnoreCase).ToArray()
+                };
             })
             .ToArray();
 
         return ToJson(new
         {
+            profiles = settings.Profiles.Select(profile => profile.Name).Order(StringComparer.OrdinalIgnoreCase).ToArray(),
             connections
         });
     }
@@ -147,7 +154,7 @@ internal sealed class DatabaseTools(DatabaseSettings settings)
             throw new InvalidOperationException($"Multiple database connections named '{connectionName}' are configured.");
         }
 
-        var connection = matches[0];
+        var connection = ResolveConnection(matches[0]);
         var provider = GetProvider(connection);
 
         if (!provider.Equals(PostgresProviderName, StringComparison.OrdinalIgnoreCase))
@@ -156,6 +163,56 @@ internal sealed class DatabaseTools(DatabaseSettings settings)
         }
 
         return connection;
+    }
+
+    private DatabaseConnectionOptions ResolveConnection(DatabaseConnectionOptions connection)
+    {
+        if (String.IsNullOrWhiteSpace(connection.Profile))
+        {
+            return connection;
+        }
+
+        var matches = settings.Profiles
+            .Where(profile => profile.Name.Equals(connection.Profile, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+
+        if (matches.Length == 0)
+        {
+            throw new InvalidOperationException($"No database profile named '{connection.Profile}' is configured.");
+        }
+
+        if (matches.Length > 1)
+        {
+            throw new InvalidOperationException($"Multiple database profiles named '{connection.Profile}' are configured.");
+        }
+
+        var profile = matches[0];
+        var options = new Dictionary<String, String?>(profile.Options, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (key, value) in connection.Options)
+        {
+            options[key] = value;
+        }
+
+        return new DatabaseConnectionOptions
+        {
+            Name = connection.Name,
+            Profile = connection.Profile,
+            Provider = GetConfiguredString(connection.Provider, profile.Provider),
+            Host = GetConfiguredString(connection.Host, profile.Host),
+            Port = connection.Port ?? profile.Port,
+            Database = GetConfiguredString(connection.Database, profile.Database),
+            Username = GetConfiguredString(connection.Username, profile.Username),
+            Password = GetConfiguredString(connection.Password, profile.Password),
+            SslMode = GetConfiguredString(connection.SslMode, profile.SslMode),
+            TrustServerCertificate = connection.TrustServerCertificate ?? profile.TrustServerCertificate,
+            Options = options
+        };
+    }
+
+    private static String? GetConfiguredString(String? value, String? defaultValue)
+    {
+        return String.IsNullOrWhiteSpace(value) ? defaultValue : value;
     }
 
     private static String GetProvider(DatabaseConnectionOptions connection)

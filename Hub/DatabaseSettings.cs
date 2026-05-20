@@ -2,6 +2,8 @@ namespace Hub;
 
 internal sealed class DatabaseSettings
 {
+    public List<DatabaseConnectionOptions> Profiles { get; init; } = [];
+
     public List<DatabaseConnectionOptions> Connections { get; init; } = [];
 }
 
@@ -9,7 +11,9 @@ internal sealed class DatabaseConnectionOptions
 {
     public String Name { get; init; } = "";
 
-    public String Provider { get; init; } = "postgres";
+    public String? Profile { get; init; }
+
+    public String? Provider { get; init; }
 
     public String? Host { get; init; }
 
