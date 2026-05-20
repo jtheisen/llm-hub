@@ -6,11 +6,13 @@ using ModelContextProtocol.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 var options = ProxyOptions.Parse(args);
 var proxySettings = builder.Configuration.GetSection("Proxy").Get<ProxySettings>() ?? new ProxySettings();
+var databaseSettings = builder.Configuration.GetSection("Databases").Get<DatabaseSettings>() ?? new DatabaseSettings();
 
 builder.WebHost.UseUrls($"http://127.0.0.1:{options.UiPort}");
 
 builder.Services.AddSingleton(options);
 builder.Services.AddSingleton(proxySettings);
+builder.Services.AddSingleton(databaseSettings);
 builder.Services.AddSingleton<ProxyRuntimeState>();
 builder.Services.AddHostedService<FluxzyProxyHostedService>();
 
